@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Best Movelaria — Painel de Orçamentos</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<nav class="sidebar">
+  <div class="brand">
+    <div class="brand-logo">TB</div>
+    <div>
+      <div class="brand-name">THE BEST</div>
+      <div class="brand-sub">MOVELARIA</div>
+    </div>
+  </div>
+  <div class="nav-links">
+    <a href="#" class="nav-item active" data-page="orcamento">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14,2 14,8 20,8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+      Novo Orçamento
+    </a>
+    <a href="#" class="nav-item" data-page="historico">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><polyline points="12,6 12,12 16,14"/></svg>
+      Histórico
+    </a>
+    <a href="#" class="nav-item" data-page="insumos">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+      Insumos & Preços
+    </a>
+  </div>
+  <div class="sidebar-footer">
+    <div class="tagline">Compromisso · Excelência · Confiança</div>
+  </div>
+</nav>
+
+<!-- MAIN CONTENT -->
+<main class="main">
+
+  <!-- ===== PAGE: NOVO ORÇAMENTO ===== -->
+  <div id="page-orcamento" class="page active">
+    <div class="page-header">
+      <div>
+        <h1>Novo Orçamento</h1>
+        <p class="page-subtitle">Preencha as informações do ambiente para calcular automaticamente</p>
+      </div>
+      <div class="header-actions">
+        <button class="btn-secondary" onclick="resetForm()">Limpar</button>
+        <button class="btn-gold" onclick="mostrarResumo()">Calcular Orçamento →</button>
+      </div>
+    </div>
+
+    <div class="form-grid">
+
+      <!-- DADOS DO CLIENTE -->
+      <div class="card full-width">
+        <div class="card-header">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          Dados do Cliente
+        </div>
+        <div class="input-row three-cols">
+          <div class="field">
+            <label>Nome do Cliente</label>
+            <input type="text" id="cliente-nome" placeholder="Ex: João Silva">
+          </div>
+          <div class="field">
+            <label>Telefone / WhatsApp</label>
+            <input type="text" id="cliente-tel" placeholder="(11) 99999-9999">
+          </div>
+          <div class="field">
+            <label>Validade do Orçamento</label>
+            <input type="date" id="validade" >
+          </div>
+        </div>
+      </div>
+
+      <!-- AMBIENTE -->
+      <div class="card">
+        <div class="card-header">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
+          Ambiente & Dimensões
+        </div>
+        <div class="field">
+          <label>Tipo de Ambiente</label>
+          <div class="ambiente-grid">
+            <button class="ambiente-btn active" data-ambiente="quarto" onclick="selecionarAmbiente(this)">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 4v16M22 4v16M2 8h20M6 8v12M18 8v12"/></svg>
+              Quarto
+            </button>
+            <button class="ambiente-btn" data-ambiente="cozinha" onclick="selecionarAmbiente(this)">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2"/><path d="M7 2v20M21 15V2v0a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3zm0 0v7"/></svg>
+              Cozinha
+            </button>
+            <button class="ambiente-btn" data-ambiente="banheiro" onclick="selecionarAmbiente(this)">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 6 6.5 3.5a1.5 1.5 0 0 0-1-.5C4.683 3 4 3.683 4 4.5V17a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-5"/><line x1="10" y1="5" x2="8" y2="7"/><line x1="2" y1="12" x2="22" y2="12"/></svg>
+              Banheiro
+            </button>
+            <button class="ambiente-btn" data-ambiente="sala" onclick="selecionarAmbiente(this)">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M20 9V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v10c0 1.1.9 2 2 2h2"/><path d="M7 15h8M7 19h8"/><rect x="7" y="13" width="10" height="8" rx="1"/></svg>
+              Sala
+            </button>
+          </div>
+        </div>
+        <div class="input-row">
+          <div class="field">
+            <label>Largura Total (metros)</label>
+            <input type="number" id="largura" placeholder="Ex: 3.0" step="0.1" min="0.5" max="10">
+          </div>
+          <div class="field">
+            <label>Altura (metros)</label>
+            <input type="number" id="altura" placeholder="Ex: 2.5" step="0.1" min="0.5" max="3.5">
+          </div>
+          <div class="field">
+            <label>Profundidade (metros)</label>
+            <input type="number" id="profundidade" placeholder="Ex: 0.6" step="0.05" min="0.3" max="1.2">
+          </div>
+        </div>
+        <div class="field">
+          <label>Observações do Ambiente</label>
+          <textarea id="obs-ambiente" placeholder="Ex: armário de 3 portas + 2 gavetas, cozinha em L, etc." rows="2"></textarea>
+        </div>
+      </div>
+
+      <!-- MATERIAIS -->
+      <div class="card">
+        <div class="card-header">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
+          Materiais & Acabamentos
+        </div>
+        <div class="input-row">
+          <div class="field">
+            <label>MDF da Caixa (estrutura interna)</label>
+            <select id="mdf-caixa">
+              <option value="">Selecione...</option>
+              <option value="branco-15">Branco TX 15mm — R$ 250/chapa</option>
+              <option value="branco-18">Branco TX 18mm — R$ 300/chapa</option>
+              <option value="madeirado-15">Madeirado 15mm — R$ 450/chapa</option>
+              <option value="madeirado-18">Madeirado 18mm — R$ 500/chapa</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>MDF das Portas</label>
+            <select id="mdf-porta">
+              <option value="">Selecione...</option>
+              <option value="branco-18">Branco TX 18mm — R$ 300/chapa</option>
+              <option value="madeirado-18">Madeirado 18mm — R$ 500/chapa</option>
+              <option value="branco-6">Branco TX 6mm — R$ 200/chapa</option>
+              <option value="madeirado-6">Madeirado 6mm — R$ 320/chapa</option>
+            </select>
+          </div>
+        </div>
+        <div class="field">
+          <label>Divisão aproximada Caixa × Porta (% de chapas p/ porta)</label>
+          <div class="slider-row">
+            <span class="slider-label">Caixa</span>
+            <input type="range" id="pct-porta" min="10" max="50" value="30" step="5" oninput="document.getElementById('pct-porta-val').textContent = this.value + '%'">
+            <span class="slider-label" id="pct-porta-val">30%</span>
+            <span class="slider-label">Porta</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- FERRAGENS -->
+      <div class="card">
+        <div class="card-header">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/></svg>
+          Ferragens
+        </div>
+        <div id="ferragens-lista">
+          <div class="ferragem-item">
+            <div class="input-row ferragem-row">
+              <div class="field">
+                <label>Item</label>
+                <select class="ferragem-tipo" onchange="atualizarPrecoFerragem(this)">
+                  <option value="">Selecione...</option>
+                  <option value="corredica" data-preco="30">Corrediça (par)</option>
+                  <option value="dobradica" data-preco="5">Dobradiça (un.)</option>
+                  <option value="puxador" data-preco="50">Puxador Perfil (un.)</option>
+                  <option value="custom">Outro...</option>
+                </select>
+              </div>
+              <div class="field">
+                <label>Qtd</label>
+                <input type="number" class="ferragem-qtd" placeholder="0" min="0" value="0">
+              </div>
+              <div class="field">
+                <label>Preço Unit. (R$)</label>
+                <input type="number" class="ferragem-preco" placeholder="0,00" min="0" step="0.01">
+              </div>
+              <button class="btn-remove-ferragem" onclick="removerFerragem(this)" title="Remover">×</button>
+            </div>
+          </div>
+        </div>
+        <button class="btn-add-ferragem" onclick="adicionarFerragem()">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          Adicionar Ferragem
+        </button>
+      </div>
+
+      <!-- CUSTOS EXTRAS -->
+      <div class="card">
+        <div class="card-header">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+          Custos Adicionais
+        </div>
+        <div class="input-row">
+          <div class="field">
+            <label>Frete (R$)</label>
+            <input type="number" id="frete" placeholder="0,00" min="0" step="10" value="0">
+          </div>
+          <div class="field">
+            <label>Instalação (chapas × R$250)</label>
+            <input type="number" id="instalacao-custom" placeholder="Calculado automaticamente" min="0" step="10">
+            <small class="field-hint">Deixe em branco para calcular auto (R$ 250/chapa)</small>
+          </div>
+        </div>
+      </div>
+
+      <!-- MARGEM -->
+      <div class="card">
+        <div class="card-header">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+          Margem & Precificação
+        </div>
+        <div class="input-row">
+          <div class="field">
+            <label>Multiplicador de Margem</label>
+            <div class="multiplicador-btns">
+              <button class="mult-btn" onclick="setMultiplicador(2.5)">2,5×</button>
+              <button class="mult-btn active" onclick="setMultiplicador(3)">3×</button>
+              <button class="mult-btn" onclick="setMultiplicador(3.5)">3,5×</button>
+              <button class="mult-btn" onclick="setMultiplicador(4)">4×</button>
+            </div>
+          </div>
+          <div class="field">
+            <label>Ou digite o multiplicador</label>
+            <input type="number" id="multiplicador" value="3" step="0.1" min="1" max="10" oninput="syncMultiplicadorBtns()">
+          </div>
+        </div>
+      </div>
+
+      <!-- UPLOAD DE IMAGENS -->
+      <div class="card">
+        <div class="card-header">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21,15 16,10 5,21"/></svg>
+          Imagens do Projeto (opcional)
+        </div>
+        <div class="upload-area" id="upload-area" onclick="document.getElementById('img-upload').click()">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21,15 16,10 5,21"/></svg>
+          <p>Clique ou arraste imagens aqui</p>
+          <small>Máximo 3 imagens · JPG ou PNG</small>
+        </div>
+        <input type="file" id="img-upload" accept="image/*" multiple style="display:none" onchange="handleImages(this)">
+        <div id="img-preview" class="img-preview"></div>
+      </div>
+
+    </div><!-- end form-grid -->
+
+    <!-- RESUMO (aparece após calcular) -->
+    <div id="resumo-section" class="resumo-section" style="display:none">
+      <div class="resumo-header">
+        <h2>Resumo do Orçamento</h2>
+        <span class="resumo-badge">Visível apenas para você</span>
+      </div>
+      <div class="resumo-grid">
+        <div class="resumo-card">
+          <div class="resumo-label">Chapas de MDF estimadas</div>
+          <div class="resumo-valor" id="r-chapas">—</div>
+        </div>
+        <div class="resumo-card">
+          <div class="resumo-label">Custo de Material</div>
+          <div class="resumo-valor" id="r-material">—</div>
+        </div>
+        <div class="resumo-card">
+          <div class="resumo-label">Ferragens</div>
+          <div class="resumo-valor" id="r-ferragens">—</div>
+        </div>
+        <div class="resumo-card">
+          <div class="resumo-label">Instalação</div>
+          <div class="resumo-valor" id="r-instalacao">—</div>
+        </div>
+        <div class="resumo-card">
+          <div class="resumo-label">Frete</div>
+          <div class="resumo-valor" id="r-frete">—</div>
+        </div>
+        <div class="resumo-card highlight">
+          <div class="resumo-label">Custo Total</div>
+          <div class="resumo-valor" id="r-custo">—</div>
+        </div>
+        <div class="resumo-card highlight-gold">
+          <div class="resumo-label">Preço de Venda (×<span id="r-mult">3</span>)</div>
+          <div class="resumo-valor" id="r-venda">—</div>
+        </div>
+        <div class="resumo-card">
+          <div class="resumo-label">Margem Bruta</div>
+          <div class="resumo-valor" id="r-margem">—</div>
+        </div>
+      </div>
+      <div class="resumo-actions">
+        <button class="btn-secondary" onclick="document.getElementById('resumo-section').style.display='none'">Editar</button>
+        <button class="btn-gold large" onclick="gerarPDF()">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14,2 14,8 20,8"/></svg>
+          Gerar Proposta PDF
+        </button>
+        <button class="btn-secondary" onclick="salvarOrcamento()">Salvar Histórico</button>
+      </div>
+    </div>
+
+  </div><!-- end page-orcamento -->
+
+
+  <!-- ===== PAGE: HISTÓRICO ===== -->
+  <div id="page-historico" class="page">
+    <div class="page-header">
+      <div>
+        <h1>Histórico de Orçamentos</h1>
+        <p class="page-subtitle">Todos os orçamentos gerados</p>
+      </div>
+      <button class="btn-gold" onclick="navegarPara('orcamento')">+ Novo Orçamento</button>
+    </div>
+    <div id="historico-lista" class="historico-lista">
+      <div class="empty-state">
+        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"><circle cx="12" cy="12" r="10"/><polyline points="12,6 12,12 16,14"/></svg>
+        <p>Nenhum orçamento salvo ainda</p>
+        <button class="btn-gold" onclick="navegarPara('orcamento')">Criar primeiro orçamento</button>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ===== PAGE: INSUMOS ===== -->
+  <div id="page-insumos" class="page">
+    <div class="page-header">
+      <div>
+        <h1>Insumos & Preços</h1>
+        <p class="page-subtitle">Atualize os preços dos materiais conforme seus fornecedores</p>
+      </div>
+      <button class="btn-gold" onclick="salvarInsumos()">Salvar Alterações</button>
+    </div>
+    <div class="insumos-grid">
+      <div class="card">
+        <div class="card-header">Chapas de MDF</div>
+        <table class="insumos-table">
+          <thead><tr><th>Material</th><th>Espessura</th><th>Preço/chapa (R$)</th></tr></thead>
+          <tbody id="mdf-tbody">
+            <tr><td>Branco TX</td><td>6mm</td><td><input type="number" class="insumo-input" data-key="branco-6" value="200" step="5"></td></tr>
+            <tr><td>Branco TX</td><td>15mm</td><td><input type="number" class="insumo-input" data-key="branco-15" value="250" step="5"></td></tr>
+            <tr><td>Branco TX</td><td>18mm</td><td><input type="number" class="insumo-input" data-key="branco-18" value="300" step="5"></td></tr>
+            <tr><td>Madeirado</td><td>6mm</td><td><input type="number" class="insumo-input" data-key="madeirado-6" value="320" step="5"></td></tr>
+            <tr><td>Madeirado</td><td>15mm</td><td><input type="number" class="insumo-input" data-key="madeirado-15" value="450" step="5"></td></tr>
+            <tr><td>Madeirado</td><td>18mm</td><td><input type="number" class="insumo-input" data-key="madeirado-18" value="500" step="5"></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="card">
+        <div class="card-header">Ferragens & Acessórios</div>
+        <table class="insumos-table">
+          <thead><tr><th>Item</th><th>Unidade</th><th>Preço (R$)</th></tr></thead>
+          <tbody id="ferragens-tbody">
+            <tr><td>Corrediça</td><td>par</td><td><input type="number" class="insumo-input" data-key="corredica" value="30" step="1"></td></tr>
+            <tr><td>Dobradiça</td><td>un.</td><td><input type="number" class="insumo-input" data-key="dobradica" value="5" step="1"></td></tr>
+            <tr><td>Puxador Perfil</td><td>un.</td><td><input type="number" class="insumo-input" data-key="puxador" value="50" step="1"></td></tr>
+          </tbody>
+        </table>
+        <button class="btn-add-ferragem" style="margin-top:12px" onclick="adicionarInsumoCustom()">+ Adicionar item</button>
+      </div>
+      <div class="card">
+        <div class="card-header">Tabela de Referência — Chapas por Ambiente</div>
+        <p class="card-hint">Estes valores são usados no cálculo automático. Ajuste com base nos seus projetos reais.</p>
+        <table class="insumos-table">
+          <thead><tr><th>Ambiente</th><th>Porte</th><th>Chapas estimadas</th></tr></thead>
+          <tbody>
+            <tr><td>Quarto / Guarda-roupa</td><td>Pequeno (até 2m)</td><td><input type="number" class="insumo-input" data-key="quarto-p" value="6" step="1"></td></tr>
+            <tr><td>Quarto / Guarda-roupa</td><td>Médio (2–3m)</td><td><input type="number" class="insumo-input" data-key="quarto-m" value="10" step="1"></td></tr>
+            <tr><td>Quarto / Guarda-roupa</td><td>Grande (3m+)</td><td><input type="number" class="insumo-input" data-key="quarto-g" value="14" step="1"></td></tr>
+            <tr><td>Cozinha</td><td>Pequena (até 2m)</td><td><input type="number" class="insumo-input" data-key="cozinha-p" value="5" step="1"></td></tr>
+            <tr><td>Cozinha</td><td>Média (2–3,5m)</td><td><input type="number" class="insumo-input" data-key="cozinha-m" value="8" step="1"></td></tr>
+            <tr><td>Cozinha</td><td>Grande (3,5m+)</td><td><input type="number" class="insumo-input" data-key="cozinha-g" value="12" step="1"></td></tr>
+            <tr><td>Banheiro</td><td>Pequeno (até 1,5m)</td><td><input type="number" class="insumo-input" data-key="banheiro-p" value="3" step="1"></td></tr>
+            <tr><td>Banheiro</td><td>Médio (1,5–2,5m)</td><td><input type="number" class="insumo-input" data-key="banheiro-m" value="5" step="1"></td></tr>
+            <tr><td>Banheiro</td><td>Grande (2,5m+)</td><td><input type="number" class="insumo-input" data-key="banheiro-g" value="7" step="1"></td></tr>
+            <tr><td>Sala / Rack / Home</td><td>Pequena</td><td><input type="number" class="insumo-input" data-key="sala-p" value="4" step="1"></td></tr>
+            <tr><td>Sala / Rack / Home</td><td>Média</td><td><input type="number" class="insumo-input" data-key="sala-m" value="6" step="1"></td></tr>
+            <tr><td>Sala / Rack / Home</td><td>Grande</td><td><input type="number" class="insumo-input" data-key="sala-g" value="9" step="1"></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="card">
+        <div class="card-header">Instalação</div>
+        <div class="field" style="padding:0">
+          <label>Custo por chapa de MDF (R$)</label>
+          <input type="number" class="insumo-input" data-key="instalacao-por-chapa" value="250" step="10" style="max-width:160px">
+          <small class="field-hint">Padrão: R$ 250 por chapa instalada pelo parceiro</small>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<!-- TEMPLATE DO PDF (invisível na tela) -->
+<div id="pdf-template" style="display:none">
+  <div id="pdf-content"><!-- Gerado dinamicamente pelo JS --></div>
+</div>
+
+<!-- NOTIFICATION -->
+<div id="notification" class="notification"></div>
+
+<script src="js/app.js"></script>
+</body>
+</html>
