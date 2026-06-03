@@ -4,8 +4,8 @@
 // ===== SUPABASE CONFIG =====
 // INSTRUÇÕES: Substitua as credenciais abaixo pelas suas do Supabase
 // Acesse: supabase.com → seu projeto → Settings → API
-const SUPABASE_URL = 'SUA_SUPABASE_URL_AQUI';
-const SUPABASE_KEY = 'SUA_SUPABASE_ANON_KEY_AQUI';
+const SUPABASE_URL = 'https://frcbjkgkindptxopbllf.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_wgaxidwMB1X9lV5Goi6vKw_INut2BY5';
 
 let supabase = null;
 try {
