@@ -7,11 +7,17 @@
 const SUPABASE_URL = 'SUA_SUPABASE_URL_AQUI';
 const SUPABASE_KEY = 'SUA_SUPABASE_ANON_KEY_AQUI';
 
-let supabase = null;
-try {
-  supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-} catch(e) {
-  console.warn('Supabase não configurado — modo offline ativo');
+let supabaseClient = null;
+function initSupabase() {
+  if (SUPABASE_URL === 'SUA_SUPABASE_URL_AQUI') return;
+  try {
+    const sb = window.supabase || window.Supabase;
+    if (sb && sb.createClient) {
+      supabaseClient = sb.createClient(SUPABASE_URL, SUPABASE_KEY);
+    }
+  } catch(e) {
+    console.warn('Supabase não configurado — modo offline ativo');
+  }
 }
 
 // ===== ESTADO GLOBAL =====
@@ -71,12 +77,14 @@ function navegarPara(page) {
   if (page === 'historico') renderizarHistorico();
 }
 
-document.querySelectorAll('.nav-item').forEach(item => {
-  item.addEventListener('click', (e) => {
-    e.preventDefault();
-    navegarPara(item.dataset.page);
+function initNavegacao() {
+  document.querySelectorAll('.nav-item').forEach(item => {
+    item.addEventListener('click', (e) => {
+      e.preventDefault();
+      navegarPara(item.dataset.page);
+    });
   });
-});
+}
 
 // ===== AMBIENTE =====
 function selecionarAmbiente(btn) {
@@ -484,9 +492,9 @@ async function salvarOrcamento(numOrc, nomeCliente) {
   localStorage.setItem('orcamentos', JSON.stringify(orcamentos));
 
   // Salva no Supabase se configurado
-  if (supabase && SUPABASE_URL !== 'SUA_SUPABASE_URL_AQUI') {
+  if (supabaseClient) {
     try {
-      await supabase.from('orcamentos').insert([{
+      await supabaseClient.from('orcamentos').insert([{
         numero: registro.numero,
         cliente: registro.cliente,
         telefone: registro.telefone,
@@ -616,6 +624,8 @@ function setDataPadrao() {
 
 // ===== INIT =====
 document.addEventListener('DOMContentLoaded', () => {
+  initSupabase();
+  initNavegacao();
   carregarConfiguracoes();
   setDataPadrao();
   adicionarFerragem();
